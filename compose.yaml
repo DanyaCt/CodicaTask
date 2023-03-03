@@ -1,0 +1,13 @@
+services:
+  wordpress:
+    image: wordpress:latest
+    ports:
+      - 80:80
+    restart: always
+    environment:
+      - WORDPRESS_DB_HOST=<Enter your "my_db_endpoint" from output>
+      - WORDPRESS_DB_USER=user
+      - WORDPRESS_DB_PASSWORD=password
+      - WORDPRESS_DB_NAME=mydb
+volumes:
+  db_data:
