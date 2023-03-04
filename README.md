@@ -41,13 +41,18 @@ Next, you must log in to your AWS account. Here's a guide for this:
 
 ### 2 STEP - Create key pair and private S3 bucket
 
-Note: Your key pair and S3 bucket must be in the same region as all your other resources (eu-central-1).
+Note: Your key pair and S3 bucket must be in the same region as all your other resources (by default 'eu-central-1'; you can change it on lines 4 and 18).
 
 Create a key pair in AWS using the following guide:
 
 >https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/create-key-pairs.html
 
 Then, install your key in the project folder and enter the name of the key in the code (line 2).
+
+And change the permissions for your key:
+```
+chmod 400 <your key>
+```
 
 Next, create a private S3 bucket and enable versioning using the following guide:
 
@@ -108,3 +113,4 @@ The Wordpress container has started, and you can check if it works by pasting th
 ```
 http://<instance public_ip from Terraform output>
 ```
+Also, you can access the site with the DNS name from the Terraform output by pasting it into your browser
