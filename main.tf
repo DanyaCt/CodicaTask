@@ -1,7 +1,6 @@
 locals {
   key_name         = "<your key here>"
   private_key_path = "./${local.key_name}.pem"
-  myIp = "77.75.149.53/32" # Change it if you want
 }
 
 terraform {
@@ -143,7 +142,7 @@ resource "aws_security_group" "web_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = [local.myIp]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
