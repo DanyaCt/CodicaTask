@@ -1,6 +1,7 @@
 locals {
   key_name         = "<your key here>"    # Enter your key here(without .pem)
   private_key_path = "./${local.key_name}.pem"
+  region = "eu-central-1"                 # Change your region if you want
 }
 
 terraform {
@@ -14,12 +15,12 @@ terraform {
   backend "s3" {  
     bucket = "<your bucket name here>"    # Enter your bucket name here(
     key = "s3/terraform.tfstate"
-    region = "eu-central-1"
+    region = "eu-central-1"          # Change your region there too
   }
 }
 
 provider "aws" {
-  region = "eu-central-1"
+  region = local.region
 }
 
 # Create VPC
@@ -32,27 +33,27 @@ resource "aws_subnet" "public_subnet_1" {
   vpc_id = aws_vpc.my_vpc.id
   cidr_block = "10.0.1.0/24"
   map_public_ip_on_launch = true
-  availability_zone = "eu-central-1a" 
+  availability_zone = "${local.region}a" 
 }
 
 resource "aws_subnet" "public_subnet_2" {
   vpc_id = aws_vpc.my_vpc.id
   cidr_block = "10.0.2.0/24"
   map_public_ip_on_launch = true
-  availability_zone = "eu-central-1b" 
+  availability_zone = "${local.region}b" 
 }
 
 # Create private subnets
 resource "aws_subnet" "private_subnet_1" {
   vpc_id = aws_vpc.my_vpc.id
   cidr_block = "10.0.3.0/24"
-  availability_zone = "eu-central-1a" 
+  availability_zone = "${local.region}a" 
 }
 
 resource "aws_subnet" "private_subnet_2" {
   vpc_id = aws_vpc.my_vpc.id
   cidr_block = "10.0.4.0/24"
-  availability_zone = "eu-central-1b" 
+  availability_zone = "${local.region}b" 
 }
 
 # Create Internet Gateway
@@ -183,7 +184,7 @@ resource "aws_db_instance" "my_db_instance" {
   engine = "mysql"
   engine_version = "5.7"
   instance_class = "db.t3.micro"
-  name = "mydb"
+  db_name = "mydb"
   username = "user"
   password = "password"
   db_subnet_group_name = aws_db_subnet_group.my_db_subnet_group.name
@@ -251,6 +252,12 @@ resource "aws_lb_target_group" "my_target_group" {
   health_check {
     path = "/"
   }
+}
+
+resource "aws_lb_target_group_attachment" "attach_my_ec2"{
+  target_group_arn = aws_lb_target_group.my_target_group.arn
+  target_id = aws_instance.my_ec2_instance.id
+  port = 80
 }
 
 resource "aws_lb_listener" "my_listener" {
