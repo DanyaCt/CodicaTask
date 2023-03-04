@@ -1,5 +1,5 @@
 locals {
-  key_name         = "<your key here>"
+  key_name         = "<your key here>"    # Enter your key here(without .pem)
   private_key_path = "./${local.key_name}.pem"
 }
 
@@ -12,7 +12,7 @@ terraform {
   }
 
   backend "s3" {  
-    bucket = "<your bucket name here>"
+    bucket = "<your bucket name here>"    # Enter your bucket name here(
     key = "s3/terraform.tfstate"
     region = "eu-central-1"
   }
@@ -229,6 +229,7 @@ resource "aws_instance" "my_ec2_instance" {
   }
   provisioner "local-exec" {
     command = "ansible-playbook -u ubuntu -i ${aws_instance.my_ec2_instance.public_ip}, --private-key ${local.private_key_path} docker.yaml"
+    # If you want to install Docker on a different type of instance, such as CentOS, replace "ubuntu" in the command with "centos"
   }
 }
 
